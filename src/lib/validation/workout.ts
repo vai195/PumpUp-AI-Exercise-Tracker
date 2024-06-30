@@ -20,3 +20,11 @@ export const createExerciseSchema = z.object({
 });
 
 export type CreateExerciseSchema = z.infer<typeof createExerciseSchema>;
+
+export const updateExerciseSchema = createExerciseSchema.extend({
+  id: z.string().min(1)
+})
+
+export const deleteExerciseSchema =  z.object({
+  id: z.string().min(1) 
+})

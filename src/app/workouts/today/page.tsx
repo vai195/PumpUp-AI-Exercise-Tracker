@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "PumpUp - All Exercises",
+  title: "PumpUp - Today's Workout",
 };
 
 export default async function WorkoutsPage() {
@@ -21,18 +21,17 @@ export default async function WorkoutsPage() {
   });
   const currDate = new Date();
 
-  const getTodaysExercises = () => {
-    allExercises.filter((x) => x.created_at.getDate() === currDate.getDate());
-  };
+  const getTodaysExercises = allExercises.filter((x) => x.created_at.getDate() === currDate.getDate());
+  
 
   return (
     <>
-      <h1 className="text-lg font-bold mb-2 text-center">All Exercises</h1>
+      <h1 className="text-lg font-bold mb-2 text-center">Today&apos;s Workout</h1>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {allExercises.map((exercise) => (
+        {getTodaysExercises.map((exercise) => (
           <Exercise exercise={exercise} key={exercise.id} />
         ))}
-        {allExercises.length === 0 && (
+        {getTodaysExercises.length === 0 && (
           <Card className="col-span-full text-center">
             <CardHeader>
               <CardTitle>No Exercises Added</CardTitle>

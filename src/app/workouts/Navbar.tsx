@@ -6,32 +6,55 @@ import logo from "../assets/logo.png";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import AddExerciseDialog from "@/components/ui/AddExerciseDialog";
+import { usePathname } from "next/navigation";
+import ThemeToggleButton from "@/components/ThemeToggleButton";
+import { dark } from "@clerk/themes";
+import { useTheme } from "next-themes";
 
 function Navbar() {
+  const { theme } = useTheme();
   const [showAddExerciseDialog, setShowAddExerciseDialog] = useState(false);
+  const path = usePathname();
   return (
     <>
-      <div className="p-4 shadow">
-        <div className="max-w-7xl m-auto flex flex-wrap gap-3 items-center justify-between">
-          <Link href="/workouts" className="flex items-center gap-1">
-            <Image src={logo} alt="PumpUp Logo" width={40} height={40} />
-            <span className="font-bold ">PumpUp</span>
+      <div className='p-4 shadow'>
+        <div className='max-w-7xl m-auto flex flex-wrap gap-3 items-center justify-between'>
+          <Link href='/workouts' className='flex items-center gap-1'>
+            <Image src={logo} alt='PumpUp Logo' width={40} height={40} />
+            <span className='font-bold '>PumpUp</span>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className='flex flex-wrap items-center gap-2'>
             <UserButton
-              afterSignOutUrl="/"
+              afterSignOutUrl='/'
               appearance={{
-                elements: { avatarBox: { width: "2.5rem", height: "2.5rem" } },
+                baseTheme: theme === "dark" ? dark : undefined,
+                elements: {
+                  avatarBox: {
+                    width: "2.5rem",
+                    height: "2.5rem",
+                  },
+                },
               }}
             />
+            <ThemeToggleButton />
+            <Button asChild>
+              <Link
+                href={
+                  path === "/workouts/today" ? "/workouts" : "workouts/today"
+                }>
+                <Calendar />
+                {path === "/workouts/today"
+                  ? " All Exercises"
+                  : " Today's Workout"}
+              </Link>
+            </Button>
             <Button
               onClick={() => {
                 setShowAddExerciseDialog(true);
-              }}
-            >
-              <Plus size={20} className="mr-2" />
+              }}>
+              <Plus size={20} className='mr-2' />
               Add Workout
             </Button>
           </div>

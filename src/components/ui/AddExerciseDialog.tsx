@@ -2,7 +2,7 @@ import {
   CreateExerciseSchema,
   createExerciseSchema,
 } from "@/lib/validation/workout";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,28 +25,48 @@ import { Checkbox } from "./checkbox";
 import LoadingButton from "../loading-button";
 import { useRouter } from "next/navigation";
 import { useToast } from "./use-toast";
+import { Exercise } from "@prisma/client";
 interface AddExerciseDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  exerciseToEdit?: Exercise
 }
 
-function AddExerciseDialog({ open, setOpen }: AddExerciseDialogProps) {
+function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogProps) {
   const { toast } = useToast();
+  const [deleteInProgress, setDeleteInProgress] = useState(false)
   const router = useRouter();
   const form = useForm<CreateExerciseSchema>({
     resolver: zodResolver(createExerciseSchema),
     defaultValues: {
-      name: "",
-      completed: false,
-      weight: 0,
-      reps: 0,
-      sets: 0,
+      name: exerciseToEdit?.name || "",
+      completed: exerciseToEdit?.completed || false,
+      weight: exerciseToEdit?.weight || 0,
+      reps: exerciseToEdit?.reps ||  0,
+      sets: exerciseToEdit?.sets || 0
     },
   });
 
   async function onSubmit(input: CreateExerciseSchema) {
     try {
-      const response = await fetch("/api/exercise", {
+      if (exerciseToEdit){
+        const response = await fetch(`/api/exercises`, {
+        method: "PUT",
+        body: JSON.stringify({
+          id: exerciseToEdit.id,
+         ...input
+        }),});
+        if (!response.ok) {
+          throw new Error("Status code: " + response.status);
+        }
+        toast({
+          title: "Exercise edited successfully!",
+          description: "Your exercise has been edited.",
+        });
+
+
+      }else{
+        const response = await fetch("/api/exercises", {
         method: "POST",
         body: JSON.stringify(input),
       });
@@ -58,6 +78,8 @@ function AddExerciseDialog({ open, setOpen }: AddExerciseDialogProps) {
         description: "Your exercise has been added.",
       });
       form.reset();
+      
+      }
       router.refresh();
       setOpen(false);
     } catch (err) {
@@ -70,11 +92,42 @@ function AddExerciseDialog({ open, setOpen }: AddExerciseDialogProps) {
     }
   }
 
+  async function deleteExercise(){
+    if (!exerciseToEdit) return;
+    setDeleteInProgress(true);
+    try {
+      const response = await fetch("api/exercises", {
+        method: "DELETE",
+        
+        body: JSON.stringify({ id: exerciseToEdit.id }),
+      })
+      if (!response.ok) {
+        throw new Error("Status code: " + response.status);
+      }
+      toast({
+        title: "Exercise deleted successfully!",
+        description: "Your exercise has been deleted.",
+      });
+      router.refresh();
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Something went wrong please try again.",
+      });
+    }
+    finally{
+      setDeleteInProgress(false);
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Exercise</DialogTitle>
+          <DialogTitle>{exerciseToEdit ? "Edit Exercise": "Add Exercise"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
@@ -163,10 +216,12 @@ function AddExerciseDialog({ open, setOpen }: AddExerciseDialogProps) {
                 </FormItem>
               )}
             />
-            <DialogFooter>
+            <DialogFooter className="gap-1 sm:gap-0">
+              {exerciseToEdit && (<LoadingButton variant="destructive" loading={deleteInProgress} disabled={form.formState.isSubmitting} onClick={deleteExercise} type="button">Delete</LoadingButton>)}
               <LoadingButton
                 type="submit"
                 loading={form.formState.isSubmitting}
+                disabled={deleteInProgress}
               >
                 Submit
               </LoadingButton>
