@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "./ThemeProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang='en'>
         <body className={inter.className}>
-          <ThemeProvider attribute="class">
-          {children}
-          <Toaster />
+          <ThemeProvider attribute='class'>
+            {children}
+            <SpeedInsights />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
