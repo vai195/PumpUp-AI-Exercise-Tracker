@@ -29,12 +29,16 @@ import { Exercise } from "@prisma/client";
 interface AddExerciseDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  exerciseToEdit?: Exercise
+  exerciseToEdit?: Exercise;
 }
 
-function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogProps) {
+function AddExerciseDialog({
+  open,
+  setOpen,
+  exerciseToEdit,
+}: AddExerciseDialogProps) {
   const { toast } = useToast();
-  const [deleteInProgress, setDeleteInProgress] = useState(false)
+  const [deleteInProgress, setDeleteInProgress] = useState(false);
   const router = useRouter();
   const form = useForm<CreateExerciseSchema>({
     resolver: zodResolver(createExerciseSchema),
@@ -42,20 +46,21 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
       name: exerciseToEdit?.name || "",
       completed: exerciseToEdit?.completed || false,
       weight: exerciseToEdit?.weight || 0,
-      reps: exerciseToEdit?.reps ||  0,
-      sets: exerciseToEdit?.sets || 0
+      reps: exerciseToEdit?.reps || 0,
+      sets: exerciseToEdit?.sets || 0,
     },
   });
 
   async function onSubmit(input: CreateExerciseSchema) {
     try {
-      if (exerciseToEdit){
+      if (exerciseToEdit) {
         const response = await fetch(`/api/exercises`, {
-        method: "PUT",
-        body: JSON.stringify({
-          id: exerciseToEdit.id,
-         ...input
-        }),});
+          method: "PUT",
+          body: JSON.stringify({
+            id: exerciseToEdit.id,
+            ...input,
+          }),
+        });
         if (!response.ok) {
           throw new Error("Status code: " + response.status);
         }
@@ -63,22 +68,19 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
           title: "Exercise edited successfully!",
           description: "Your exercise has been edited.",
         });
-
-
-      }else{
+      } else {
         const response = await fetch("/api/exercises", {
-        method: "POST",
-        body: JSON.stringify(input),
-      });
-      if (!response.ok) {
-        throw new Error("Status code: " + response.status);
-      }
-      toast({
-        title: "Exercise added successfully!",
-        description: "Your exercise has been added.",
-      });
-      form.reset();
-      
+          method: "POST",
+          body: JSON.stringify(input),
+        });
+        if (!response.ok) {
+          throw new Error("Status code: " + response.status);
+        }
+        toast({
+          title: "Exercise added successfully!",
+          description: "Your exercise has been added.",
+        });
+        form.reset();
       }
       router.refresh();
       setOpen(false);
@@ -92,15 +94,15 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
     }
   }
 
-  async function deleteExercise(){
+  async function deleteExercise() {
     if (!exerciseToEdit) return;
     setDeleteInProgress(true);
     try {
       const response = await fetch("api/exercises", {
         method: "DELETE",
-        
+
         body: JSON.stringify({ id: exerciseToEdit.id }),
-      })
+      });
       if (!response.ok) {
         throw new Error("Status code: " + response.status);
       }
@@ -117,8 +119,7 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
         title: "Uh oh! Something went wrong.",
         description: "Something went wrong please try again.",
       });
-    }
-    finally{
+    } finally {
       setDeleteInProgress(false);
     }
   }
@@ -127,19 +128,21 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{exerciseToEdit ? "Edit Exercise": "Add Exercise"}</DialogTitle>
+          <DialogTitle>
+            {exerciseToEdit ? "Edit Exercise" : "Add Exercise"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
             <FormField
               control={form.control}
-              name="name"
+              name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Exercise Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g. bench press, squat, deadlift"
+                      placeholder='e.g. bench press, squat, deadlift'
                       {...field}
                     />
                   </FormControl>
@@ -149,14 +152,14 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
             />
             <FormField
               control={form.control}
-              name="weight"
+              name='weight'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount of Weight (lbs)</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="e.g. a number"
+                      type='number'
+                      placeholder='e.g. a number'
                       {...field}
                     />
                   </FormControl>
@@ -166,14 +169,14 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
             />
             <FormField
               control={form.control}
-              name="reps"
+              name='reps'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount of Reps</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="e.g. a number"
+                      type='number'
+                      placeholder='e.g. a number'
                       {...field}
                     />
                   </FormControl>
@@ -183,14 +186,14 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
             />
             <FormField
               control={form.control}
-              name="sets"
+              name='sets'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Amount of Sets</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="e.g. a number"
+                      type='number'
+                      placeholder='e.g. a number'
                       {...field}
                     />
                   </FormControl>
@@ -200,29 +203,37 @@ function AddExerciseDialog({ open, setOpen, exerciseToEdit }: AddExerciseDialogP
             />
             <FormField
               control={form.control}
-              name="completed"
+              name='completed'
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <div className="space-y-1 leading-none">
+                  <div className='space-y-1 leading-none'>
                     <FormLabel>Completed Exercise</FormLabel>
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <DialogFooter className="gap-1 sm:gap-0">
-              {exerciseToEdit && (<LoadingButton variant="destructive" loading={deleteInProgress} disabled={form.formState.isSubmitting} onClick={deleteExercise} type="button">Delete</LoadingButton>)}
+            <DialogFooter className='gap-1 sm:gap-0'>
+              {exerciseToEdit && (
+                <LoadingButton
+                  variant='destructive'
+                  loading={deleteInProgress}
+                  disabled={form.formState.isSubmitting}
+                  onClick={deleteExercise}
+                  type='button'>
+                  Delete
+                </LoadingButton>
+              )}
               <LoadingButton
-                type="submit"
+                type='submit'
                 loading={form.formState.isSubmitting}
-                disabled={deleteInProgress}
-              >
+                disabled={deleteInProgress}>
                 Submit
               </LoadingButton>
             </DialogFooter>

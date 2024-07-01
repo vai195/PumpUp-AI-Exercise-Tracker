@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-const apiKey = process.env.OPEN_AI_API_KEY;
+const apiKey = process.env.OPENAI_API_KEY;
 
 if (!apiKey) {
   throw new Error("OPEN_AI_API_KEY environment variable not found");

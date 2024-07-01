@@ -97,16 +97,41 @@ export async function PUT(req: Request) {
       return NextResponse.json({ errors: "Unauthorized" }, { status: 401 });
     }
 
-    const updatedExercise = await prisma.exercise.update({
-      where: { id },
-      data: {
-        name,
-        completed,
-        reps,
-        sets,
-        weight,
-      },
+    const x = new Date();
+
+    const embedding = await getEmbeddingForExecise(
+      name,
+      completed,
+      sets,
+      reps,
+      weight,
+      exercise.created_at,
+      x
+    );
+
+    const updatedExercise = await prisma.$transaction(async (tx) => {
+      const updatedExercise = await tx.exercise.update({
+        where: { id },
+        data: {
+          name,
+          completed,
+          reps,
+          sets,
+          weight,
+        },
+      });
+
+      await exerciseIndex.upsert([
+        {
+          id,
+          values: embedding,
+          metadata: { userId },
+        },
+      ]);
+
+      return updatedExercise;
     });
+
     return NextResponse.json(
       {
         updatedExercise,
@@ -148,9 +173,13 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ errors: "Unauthorized" }, { status: 401 });
     }
 
-    await prisma.exercise.delete({
-      where: { id },
+    await prisma.$transaction(async (tx) => {
+      await tx.exercise.delete({
+        where: { id },
+      });
+      await exerciseIndex.deleteOne(id);
     });
+
     return NextResponse.json({ message: "Exercise deleted" }, { status: 200 });
   } catch (err) {
     console.error(err);

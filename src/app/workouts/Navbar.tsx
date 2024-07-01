@@ -12,10 +12,12 @@ import { usePathname } from "next/navigation";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
 import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
+import AIChatButton from "@/components/AIChatButton";
 
 function Navbar() {
   const { theme } = useTheme();
   const [showAddExerciseDialog, setShowAddExerciseDialog] = useState(false);
+
   const path = usePathname();
   return (
     <>
@@ -57,6 +59,7 @@ function Navbar() {
               <Plus size={20} className='mr-2' />
               Add Workout
             </Button>
+            <AIChatButton />
           </div>
         </div>
       </div>
