@@ -9,10 +9,7 @@ export const metadata: Metadata = {
 export default function SignUpPage() {
   return (
     <div className='flex h-screen items-center justify-center'>
-      <SignUp
-        appearance={{ variables: { colorPrimary: "#0f172a" } }}
-        fallbackRedirectUrl={"/"}
-      />
+      <SignUp appearance={{ variables: { colorPrimary: "#0f172a" } }} />
     </div>
   );
 }
