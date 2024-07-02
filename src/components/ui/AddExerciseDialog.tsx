@@ -98,7 +98,7 @@ function AddExerciseDialog({
     if (!exerciseToEdit) return;
     setDeleteInProgress(true);
     try {
-      const response = await fetch("api/exercises", {
+      const response = await fetch("/api/exercises", {
         method: "DELETE",
 
         body: JSON.stringify({ id: exerciseToEdit.id }),
