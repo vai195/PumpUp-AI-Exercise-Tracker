@@ -1,7 +1,7 @@
 # 💪 PumpUp AI Exercise Tracker 
 
-## 🛜 Visit the Deployed App
-[PumpUp AI Exercise Tracker](https://vaibhavsonnakul.site/)
+## [🛜 Visit the Deployed App<-](https://vaibhavsonnakul.site/)
+
 ## 🙌 Key Responsibilities
 - User Interface & Experience: Designed and implemented a responsive, user-friendly interface for tracking workouts and interacting with the AI assistant using Next.js.
 - API & Backend Development: Developed APIs for exercise data, user interactions, and AI queries.
@@ -15,7 +15,7 @@
 - Performance & Scalability: Ensured the app's backend and databases are optimized for performance and can scale with user growth.
 
 ## 👨‍💻 Technologies Used
-Next.js, OpenAI API, Pinecone Vector DB, MongoDB, Prisma, TailwindCSS, Shadcn
+Next.js, OpenAI API, Pinecone Vector DB, MongoDB, Prisma, TailwindCSS, Shadcn, Vercel
 
 ## 🖥️ Display
 ![](https://github.com/vai195/PumpUp-AI-Exercise-Tracker/assets/127155015/66fd6f83-784c-452e-9108-e668041fc13c)
