@@ -21,18 +21,21 @@ export default async function WorkoutsPage() {
   });
   const currDate = new Date();
 
-  const getTodaysExercises = allExercises.filter((x) => x.created_at.getDate() === currDate.getDate());
-  
+  const getTodaysExercises = allExercises.filter(
+    (x) => x.created_at.toDateString() === currDate.toDateString()
+  );
 
   return (
     <>
-      <h1 className="text-lg font-bold mb-2 text-center">Today&apos;s Workout</h1>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <h1 className='text-lg font-bold mb-2 text-center'>
+        Today&apos;s Workout
+      </h1>
+      <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
         {getTodaysExercises.map((exercise) => (
           <Exercise exercise={exercise} key={exercise.id} />
         ))}
         {getTodaysExercises.length === 0 && (
-          <Card className="col-span-full text-center">
+          <Card className='col-span-full text-center'>
             <CardHeader>
               <CardTitle>No Exercises Added</CardTitle>
             </CardHeader>
