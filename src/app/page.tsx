@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { Github } from "lucide-react";
 
 export default function Home() {
   const { userId } = auth();
@@ -25,6 +26,9 @@ export default function Home() {
       <Button size='lg' asChild>
         <Link href='/workouts/today'>Get Started</Link>
       </Button>
+      <Link href='https://github.com/vai195/PumpUp-AI-Exercise-Tracker'>
+        <Github />
+      </Link>
     </main>
   );
 }
