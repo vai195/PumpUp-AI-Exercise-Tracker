@@ -1,6 +1,6 @@
 # 💪 PumpUp AI Exercise Tracker 
 
-## [🛜 Visit the Deployed App<-](https://vaibhavsonnakul.site/)
+## [🛜 Visit the Deployed App<-](https://pumpup-ai-exercise-tracker.vercel.app/)
 
 ## 🙌 Key Responsibilities
 - User Interface & Experience: Designed and implemented a responsive, user-friendly interface for tracking workouts and interacting with the AI assistant using Next.js.
